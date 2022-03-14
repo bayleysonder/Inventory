@@ -1,0 +1,263 @@
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,400;1,100&display=swap');
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .clearfix {
+        content: "";
+        clear: both;
+    }
+    
+    .floatright {
+        float: right;
+        margin-top: 10px;
+    }
+    
+    .filterinput {
+        width: 40%;
+        margin-top: 10px;
+    }
+    
+    body,
+    html {
+        height: 100%;
+        margin: 0;
+    }
+    /* loggin container */
+    
+    .wrapper {
+        display: block;
+        position: relative;
+        width: 360px;
+        padding: 20px;
+        border: 2px solid #70235c;
+        margin: auto;
+        margin-top: 100px;
+        background-color: #fff;
+        box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.31);
+    }
+    /* nav bar classes */
+    
+    .navBar {
+        width: 100%;
+        background-color: #fff;
+        padding-top: 0px;
+        float: right;
+        border-bottom: 2px solid #70235c;
+    }
+    
+    .navBar a {
+        text-decoration: none;
+        float: right;
+        margin-right: 0;
+        margin-left: 10px;
+        font-size: 16px;
+    }
+    
+    .topNav {
+        display: inline;
+        float: right;
+        margin-bottom: 0;
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+    
+    .topNav a {
+        color: black;
+    }
+    
+    .topNav a:hover {
+        color: #f59222;
+    }
+    
+    .topBtn {
+        background-color: #f59222;
+        color: black;
+        border-radius: 12px;
+        padding: 5px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.5s;
+    }
+    
+    .topBtn:hover {
+        background-color: rgb(245, 245, 245);
+    }
+    
+    .botNav {
+        color: rgb(179, 179, 179);
+        padding-top: 72px;
+        margin-right: 10px;
+        margin-bottom: 0px;
+    }
+    
+    .botNav a {
+        color: rgb(179, 179, 179);
+    }
+    
+    .botNav button {
+        border: none;
+        background-color: inherit;
+        color: rgb(179, 179, 179);
+        /*margin-left: 10px;*/
+        margin-left: 10px;
+    }
+    
+    #active {
+        color: rgb(233, 167, 145);
+    }
+    /* underline classes are for navigation underline links when hovering */
+    
+    .underline {
+        position: relative;
+    }
+    
+    .underline:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: #f59222;
+        transform-origin: bottom right;
+        transition: transform 0.25s ease-out;
+    }
+    
+    .underline:hover:after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    /* dropdown menu underline, fix to not underline whole button element; but the button text*/
+    
+    .dropunderline {
+        position: relative;
+    }
+    
+    .dropunderline:after {
+        content: '';
+        position: absolute;
+        width: 80%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: 0;
+        left: 10%;
+        background-color: #f59222;
+        transform-origin: bottom right;
+        transition: transform 0.25s ease-out;
+    }
+    
+    .dropunderline:hover:after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+    }
+    
+    .logo {
+        display: inline;
+        float: left;
+        padding-left: 10px;
+        margin-top: 0;
+    }
+    
+    .trackNav {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+    
+    .trackNav button {
+        background-color: inherit;
+        float: right;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+    }
+    /* Change background color of buttons on hover */
+    
+    .trackNav button:hover {
+        background-color: #ddd;
+    }
+    /* Create an active/current tablink class */
+    
+    .trackNav button.active {
+        background-color: #ccc;
+    }
+    /* Style the tab content */
+    
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+    
+    .tabcontent {
+        animation: fadeEffect 1s;
+        /* Fading effect takes 1 second */
+    }
+    /* Go from zero to full opacity */
+    
+    @keyframes fadeEffect {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    
+    .column {
+        float: left;
+        padding: 5px;
+    }
+    
+    .left {
+        width: 25%;
+        border-right: 1px solid #ccc;
+    }
+    
+    .right {
+        width: 75%;
+    }
+    /* bootstrap btn class recolor */
+    
+    .btn-primary {
+        background-color: #f59222;
+        border-color: #70235c;
+    }
+    
+    .btn-primary:hover {
+        background-color: #f15b2a;
+    }
+    /* left click outline */
+    
+    .btn-primary:focus {
+        background-color: #f15b2a;
+        border-color: inherit;
+        box-shadow: 0 0 0 0.25rem rgba(253, 131, 49, 0.5);
+    }
+    /* right click autoline */
+    
+    .btn-primary:active:focus,
+    .show>.btn-primary.dropdown-toggle:focus {
+        box-shadow: 0 0 0 0.25rem rgba(253, 131, 49, 0.5);
+    }
+    
+    .dropdown-item:active {
+        background-color: #f15b2a;
+    }
+    
+    .dropdown-item:focus {
+        background-color: #f15b2a;
+    }
+    
+    .dropdown-item:active:focus,
+    .show>.dropdown-item.dropdown-toggle:focus {
+        box-shadow: 0 0 0 0.25rem rgba(253, 131, 49, 0.5);
+    }
