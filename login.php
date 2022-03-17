@@ -94,15 +94,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 
 </head>
 
 <body style="background-color: #fff;">
+    <!-- login container -->
     <div class="wrapper">
-        <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
+        <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
         <h2 style="margin-top: 57px;">Login</h2>
         <p class="clearfix" style="float: left; display: inline">Please fill in your credentials to login.</p>
 
@@ -124,8 +125,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
             </div>
             <div class="form-group">
-                <input type="submit"  class="btn btn-primary" value="Login">
+                <input type="submit" class="btn btn-primary" value="Login">
             </div>
+            <!-- redirct to register page -->
             <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
         </form>
     </div>

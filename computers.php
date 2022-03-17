@@ -1,16 +1,15 @@
 <?php
 require_once 'auth_session.php';
 require_once 'config.php';
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
-    <title>NNH Tracking</title>
+    <title>Tracking</title>
+
     <!-- icons lib -->
     <script src="https://kit.fontawesome.com/5ca3b63cae.js" crossorigin="anonymous"></script>
     <!-- bootstrap 5 css lib -->
@@ -23,15 +22,18 @@ require_once 'config.php';
 
 <header>
     <div class="clearfix">
+        <!-- Website Navigation Container -->
         <div class="container">
             <div class="navBar" style="margin-bottom: 10px">
-                <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
-
+                <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
+                <!-- account actions -->
                 <div class="topNav">
+                    <!-- displays current username who has an active session -->
                     <strong><?php echo htmlspecialchars($_SESSION["username"]); ?></strong> <span>|</span>
+                    <!-- logout icon and code to end session -->
                     <a href="logout.php"><em class="fas fa-sign-out-alt"></em></a>
                 </div>
-
+                <!-- website navigation -->
                 <div class="botNav">
                     <ul class="nav justify-content-end">
                         <li class="nav-item">
@@ -45,11 +47,11 @@ require_once 'config.php';
                         </li>
                         <div class="dropdown">
                             <div class="dropunderline">
-                                <button id="dLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button id="dropMenuLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Tracking
                                 </button>
 
-                                <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <ul class="dropdown-menu" aria-labelledby="dropMenuLabel">
                                     <li><a class="dropdown-item" href="computers.php">Computers</a></li>
                                     <li><a class="dropdown-item" href="medicalsupplies.php">Medical Supplies</a></li>
                                 </ul>
@@ -76,21 +78,22 @@ require_once 'config.php';
     }
     ?>
 
+    <!-- check-out item button container -->
     <div class="container">
         <div class="floatright">
             <!-- button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployee">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCheckOut">
                 Check-out item
             </button>
         </div>
     </div>
 
     <!-- modal content -->
-    <div class="modal fade" id="addEmployee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addCheckOut" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="trackingModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Computer Check-out</h5>
+                    <h5 class="modal-title" id="trackingModal">Computer Check-out</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -177,13 +180,13 @@ require_once 'config.php';
         </div>
     </div>
     <?php
-    include 'config.php';
     // sql statement selects all rows in checkout with a null returnDate
-    $sql = "SELECT employees.email, assets.assetTag, assets.qtyOut, dateOut, checkout.id, returnDate
-                        FROM checkout 
-                        LEFT JOIN employees on employees.id = checkout.empid 
-                        LEFT JOIN assets on assets.id = checkout.assetid
-                        WHERE returnDate IS NULL ORDER BY assets.assetTag";
+    $sql = "SELECT employees.email, assets.assetTag, assets.assetName, category.category, assets.qtyOut, dateOut, checkout.id, returnDate
+            FROM checkout 
+            LEFT JOIN employees on employees.id = checkout.empid 
+            LEFT JOIN assets on assets.id = checkout.assetid
+            LEFT JOIN category on assets.categoryid = category.id
+            WHERE returnDate IS NULL ORDER BY assets.categoryid, assets.assetTag";
 
     // checks if query is valid
     if ($result = $conn->query($sql)) {
@@ -201,55 +204,53 @@ require_once 'config.php';
         </div>
     </div>
     <div class="container">
-        <?php
-        // creates table headers
-        if (empty($elevated_err)) {
-            echo "<table id ='myTable' class='table'>
+
+        <table id='myTable' class='table'>
+            <tr>
+                <th>Employee</th>
+                <th>Asset Tag</th>
+                <th>Asset Name</th>
+                <th>Category</th>
+                <th>Date Out</th>
+                <?php if (empty($elevated_err)) { ?>
+                    <th>Edit</th>
+                <?php } ?>
+            </tr>
+            <?php
+            //closes table after qry result = total rows
+            if ($result->num_rows > 0) {
+                // creates output data of each row
+
+                while ($row = $result->fetch_assoc()) { ?>
+
                     <tr>
-                        <th>Employee</th>
-                        <th>Asset Tag</th>
-                        <th>Quantity Out</th>
-                        <th>Date Out</th>
-                        <th>Edit</th>
-                    </tr>";
-        } else {
-            echo "<table id ='myTable' class='table'>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Asset Tag</th>
-                        <th>Quantity Out</th>
-                        <th>Date Out</th>
-                    </tr>";
-        }
+                        <td><?php echo $row["email"]; ?></td>
+                        <td><?php echo $row["assetTag"]; ?></td>
+                        <td><?php echo $row["assetName"]; ?></td>
+                        <td><?php echo $row["category"]; ?></td>
+                        <?php $trimDate = date('m-d-y', strtotime($row['dateOut']));  ?>
+                        <td><?php echo $trimDate; ?></td>
+                        <?php if (empty($elevated_err)) { ?>
+                            <!-- passes both assetTag and row id with anchor tag -->
+                            <td><a href="return.php?id=<?php echo $row["id"] ?>&&assetTag=<?php echo $row["assetTag"]; ?>&&elevated_err=<?php $elevated_err; ?>">Return</a></td>
+                        <?php } ?>
+                    </tr>
 
-        //closes table after qry result = total rows
-        if ($result->num_rows > 0) {
-            // creates output data of each row
-
-            while ($row = $result->fetch_assoc()) { ?>
-                <tr>
-                    <td><?php echo $row["email"]; ?></td>
-                    <td><?php echo $row["assetTag"]; ?></td>
-                    <td><?php echo $row["qtyOut"]; ?></td>
-                    <td><?php echo $row["dateOut"]; ?></td>
-                    <?php if (empty($elevated_err)) { ?>
-                        <!-- passes both assetTag and row id with anchor tag -->
-                        <td><a href="return.php?id=<?php echo $row["id"] ?>&&assetTag=<?php echo $row["assetTag"]; ?>&&elevated_err=<?php $elevated_err; ?>">Return</a></td>
-                    <?php } ?>
-                </tr>
-
-        <?php
-            }
-        } ?>
+            <?php
+                }
+            } ?>
         </table>
     </div>
+    <!-- footer container -->
     <div class="container">
-        <footer class="d-flex flex-wrap py-3 my-4">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <ul class="nav col-md-12 justify-content-end list-unstyled d-flex">
                 <span class="text-muted">created by - Bayley Sonder</span>
             </ul>
         </footer>
     </div>
+    <!-- js that filters myTable based on user input -->
     <script src="filterTable.js"></script>
 </body>
+
 </html>

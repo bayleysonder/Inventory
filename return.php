@@ -2,8 +2,10 @@
 require 'config.php';
 include 'auth_session.php';
 date_default_timezone_set('America/Los_Angeles');
+// assigns value based off the value passed through the anchor tag
 $elevated_err = $_REQUEST['elevated_err'];
 
+//checks if user is elevated
 if (empty($elevated_err)) {
     $id = $_REQUEST['id'];
     $assetTag = $_REQUEST["assetTag"];

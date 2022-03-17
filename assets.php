@@ -8,91 +8,88 @@ $assetTag = $assetName = $qty = $category = "";
 $assetTag_err = $assetName_err = $qty_err = $category_err = $elevated_err = "";
 
 
-// processing form data when form is submitted
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    // checks to see if elevated_err attibute is empty 
-    if (empty($elevated_err)) {
-
-        // validate asset tag
-        // Prepare a select statement
-        $sql = "SELECT * FROM assets WHERE assetTag = ?";
-
-        if ($stmt = $conn->prepare($sql)) {
-            // bind variables to the prepared statement as parameters
-            $stmt->bind_param("s", $param_assetTag);
-
-            // set parameters
-            $param_assetTag = trim($_POST["assetTag"]);
-
-            // attempt to execute the prepared statement
-            if ($stmt->execute()) {
-                // store result
-                $stmt->store_result();
-                if (empty(trim($_POST['assetTag']))) {
-                    $assetTag_err = "Enter a Asset Tag.";
-                }
-                elseif ($stmt->num_rows == 1) {
-                    $assetTag_err = "This assetTag is already taken.";
-                } else {
-                    $assetTag = trim($_POST["assetTag"]);
-                }
-            }
-        }
-
-        // validate asset name
-        if (empty(trim($_POST["assetName"]))) {
-            $assetName_err = "enter a name.";
-        } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/', trim($_POST["assetName"]))) {
-            $assetName_err = "Asset name can only contain characters and numbers";
-        } else {
-            $assetName = trim($_POST["assetName"]);
-        }
-
-        // validate quantity
-        if (empty(trim($_POST["qty"]))) {
-            $qty_err = "enter a number.";
-        } elseif (!preg_match('/^[0-9]+$/', trim($_POST["qty"]))) {
-            $qty_err = "only numbers";
-        } else {
-            $qty = trim($_POST["qty"]);
-        }
-
-        $categoryid = $_POST['categoryid'];
+// processing form data when form is submitted and user is elevated
+if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($elevated_err)) {
 
 
-        if (empty($assetTag_err) && empty($assetName_err) && empty($qty_err)) {
+    // validate asset tag
+    // Prepare a select statement
+    $sql = "SELECT * FROM assets WHERE assetTag = ?";
 
-            // prepare an insert statement
-            $sql = "INSERT INTO assets (assetTag, assetName, qty, categoryid, qtyOut, outOfOrder) VALUES (?, ?, ?, ?, 0, 0)";
+    if ($stmt = $conn->prepare($sql)) {
+        // bind variables to the prepared statement as parameters
+        $stmt->bind_param("s", $param_assetTag);
 
-            if ($stmt = $conn->prepare($sql)) {
-                // bind variables to the prepared statement as parameters
-                $stmt->bind_param("ssss", $param_assetTag, $param_assetName, $param_qty, $param_categoryid);
+        // set parameters
+        $param_assetTag = trim($_POST["assetTag"]);
 
-                // set parameters
-                $param_assetTag = $assetTag;
-                $param_assetName = $assetName;
-                $param_qty = $qty;
-                $param_categoryid = $categoryid;
-
-
-                // attempt to execute the prepared statement
-                if ($stmt->execute()) {
-                    // redirect to login page
-                    header("location: assets.php");
-                } else {
-                    ?>
-                    <script> console.log("Ooeeeeeeps! Something went wrong. Please try again later.");</script>
-                    <?php
-                }
-
-                // close statement
-                $stmt->close();
+        // attempt to execute the prepared statement
+        if ($stmt->execute()) {
+            // store result
+            $stmt->store_result();
+            if (empty(trim($_POST['assetTag']))) {
+                $assetTag_err = "Enter a Asset Tag.";
+            } elseif ($stmt->num_rows == 1) {
+                $assetTag_err = "This assetTag is already taken.";
+            } else {
+                $assetTag = trim($_POST["assetTag"]);
             }
         }
     }
-    $conn->close();
+
+    // validate asset name
+    if (empty(trim($_POST["assetName"]))) {
+        $assetName_err = "enter a name.";
+    } elseif (!preg_match('/^[a-zA-Z0-9\. \-]+$/', trim($_POST["assetName"]))) {
+        $assetName_err = "Asset name can only contain characters and numbers";
+    } else {
+        $assetName = trim($_POST["assetName"]);
+    }
+
+    // validate quantity
+    if (empty(trim($_POST["qty"]))) {
+        $qty_err = "enter a number.";
+    } elseif (!preg_match('/^[0-9]+$/', trim($_POST["qty"]))) {
+        $qty_err = "only numbers";
+    } else {
+        $qty = trim($_POST["qty"]);
+    }
+
+    $categoryid = $_POST['categoryid'];
+
+    //checks to see if all entries are valid
+    if (empty($assetTag_err) && empty($assetName_err) && empty($qty_err)) {
+
+        // prepare an insert statement
+        $sql = "INSERT INTO assets (assetTag, assetName, qty, categoryid, qtyOut, outOfOrder) VALUES (?, ?, ?, ?, 0, 0)";
+
+        if ($stmt = $conn->prepare($sql)) {
+            // bind variables to the prepared statement as parameters
+            $stmt->bind_param("ssss", $param_assetTag, $param_assetName, $param_qty, $param_categoryid);
+
+            // set parameters
+            $param_assetTag = $assetTag;
+            $param_assetName = $assetName;
+            $param_qty = $qty;
+            $param_categoryid = $categoryid;
+
+
+            // attempt to execute the prepared statement
+            if ($stmt->execute()) {
+                // redirect to login page
+                header("location: assets.php");
+            } else { ?>
+                <script>
+                    console.log("Ooeeeeeeps! Something went wrong. Please try again later.");
+                </script>
+
+<?php
+            }
+
+            // close statement
+            $stmt->close();
+        }
+    }
 }
 ?>
 
@@ -101,7 +98,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <head>
     <meta charset="UTF-8">
-    <title>NNH Inventory</title>
+    <title>Inventory</title>
+
     <!-- icons lib -->
     <script src="https://kit.fontawesome.com/5ca3b63cae.js" crossorigin="anonymous"></script>
     <!-- bootstrap 5 css lib -->
@@ -115,15 +113,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <header>
     <div class="clearfix">
+        <!-- Website Navigation Container -->
         <div class="container">
             <div class="navBar" style="margin-bottom: 10px">
-                <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
-
+                <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
+                <!-- account actions -->
                 <div class="topNav">
+                    <!-- displays current username who has an active session -->
                     <strong><?php echo htmlspecialchars($_SESSION["username"]); ?></strong> <span>|</span>
+                    <!-- logout icon and code to end session -->
                     <a href="logout.php"><em class="fas fa-sign-out-alt"></em></a>
                 </div>
-
+                <!-- website navigation -->
                 <div class="botNav">
                     <ul class="nav justify-content-end">
                         <li class="nav-item">
@@ -137,11 +138,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </li>
                         <div class="dropdown">
                             <div class="dropunderline">
-                                <button id="dLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button id="dropDownLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Tracking
                                 </button>
 
-                                <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <ul class="dropdown-menu" aria-labelledby="dropDownLabel">
                                     <li><a class="dropdown-item" href="computers.php">Computers</a></li>
                                     <li><a class="dropdown-item" href="medicalsupplies.php">Medical Supplies</a></li>
                                 </ul>
@@ -156,8 +157,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
     <?php
-
-    include "config.php";
     // sql stmt for elevated check for current user loggin
     $sql = "SELECT elevated FROM users WHERE username = '" . $_SESSION['username'] . "'";
     $result = $conn->query($sql);
@@ -178,13 +177,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Checks if query is valid
 
     if ($result = $conn->query($sql)) {
-        ?> <script>console.log('Query Pulled');</script> <?php 
-    } else {
-        die("Query failed" . $conn->connect_error);
-    }
+    ?> <script>
+            console.log('Query Pulled');
+        </script> <?php
+                } else {
+                    die("Query failed" . $conn->connect_error);
+                }
 
-    ?>
-
+                    ?>
+    <!-- Add Asset button container -->
     <div class="container">
         <div class="floatright">
             <!-- button trigger modal -->
@@ -227,7 +228,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="row g-2">
                                 <div class="col-sm-4">
                                     <label for="validationAssetTag" class="form-label">Asset Tag</label>
-                                    <input type="text" id="validationAssetTag" name="assetTag" placeholder="xx58000" class="form-control <?php echo (!empty($assetTag_err)) ? 'is-invalid' : ''; ?>">
+                                    <input type="text" id="validationAssetTag" name="assetTag" placeholder="Tag or S/N" class="form-control <?php echo (!empty($assetTag_err)) ? 'is-invalid' : ''; ?>">
                                     <span class="invalid-feedback"><?php echo $assetTag_err; ?></span>
                                 </div>
 
@@ -276,6 +277,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </div>
+    <!-- Search value filter container -->
     <div class="container">
         <div class="filterinput">
             <div class="form-group">
@@ -284,8 +286,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
         <?php
-        //creates table headers
 
+        //creates table headers
         echo "<table id ='myTable' class='table'>
         <tr><th>Asset Tag</th>
             <th>Asset Name</th>
@@ -308,16 +310,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "0 records";
         }
         echo "</table>";
+        $conn->close();
         ?>
     </div>
-
+    <!-- Footer container -->
     <div class="container">
-        <footer class="d-flex flex-wrap py-3 my-4">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <ul class="nav col-md-12 justify-content-end list-unstyled d-flex">
                 <span class="text-muted">created by - Bayley Sonder</span>
             </ul>
         </footer>
     </div>
+    <!-- script from bootstrap handling modals -->
     <script>
         var myModal = document.getElementById('myModal')
         var myInput = document.getElementById('myInput')
@@ -326,6 +330,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             myInput.focus()
         })
     </script>
+    <!-- js that filters myTable based on user input -->
     <script src="filterTable.js"></script>
 </body>
+
 </html>

@@ -21,7 +21,7 @@ require_once 'config.php';
 <header>
     <div class="container">
         <div class="navBar" style="margin-bottom: 10px">
-            <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
+            <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
             <!-- account actions -->
             <div class="topNav">
                 <!-- displays current username who has an active session -->
@@ -81,7 +81,7 @@ require_once 'config.php';
     <!-- Footer -->
     <div class="clearfix">
         <div class="container">
-            <footer class="d-flex flex-wrap py-3 my-4">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
                 <ul class="nav col-md-12 justify-content-end list-unstyled d-flex">
                     <span class="text-muted">created by - Bayley Sonder</span>
                 </ul>
@@ -192,9 +192,5 @@ require_once 'config.php';
             assetConfig
         );
     </script>
-
-
-
 </body>
-
 </html>

@@ -4,9 +4,10 @@ require_once 'config.php';
 
 // define variables and initialize with empty values
 $firstname = $lastname = $email = $userid = "";
+// error check variables all initalized with empty vales
 $firstname_err = $lastname_err = $email_err = $elevated_err = "";
 
-// processing form data when form is submitted
+// processing form data when form is submitted and user is elevated
 if (isset($_POST['insertEmp']) && empty($elevated_err)) {
 
     // validate first name
@@ -54,11 +55,10 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
             }
         }
     }
-    // insert employee into database
-    // check input errors before inserting in database
+    // checks input errors before inserting in database
     if (empty($firstname_err) && empty($lastname_err) && empty($email_err) && empty($elevated_err)) {
 
-        // prepare an insert statement
+        // prepare an insert statement to insert employee into database
         $sql = "INSERT INTO employees (firstname, lastname, email) VALUES (?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
@@ -76,21 +76,14 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
                 // redirect to login page
                 header("location: employees.php");
             } else {
-                echo "Ooeeeeeeps! Something went wrong. Please try again later.";
+                echo "Oops! Something went wrong. Please try again later.";
             }
 
             // close statement
             $stmt->close();
         }
     }
-
-    // close connection
-    $conn->close();
 }
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -98,7 +91,8 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
 
 <head>
     <meta charset="UTF-8">
-    <title>NNH Employees</title>
+    <title>Employees</title>
+    
     <!-- icons lib -->
     <script src="https://kit.fontawesome.com/5ca3b63cae.js" crossorigin="anonymous"></script>
     <!-- bootstrap 5 css lib -->
@@ -111,9 +105,10 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
 
 <header>
     <div class="clearfix">
+        <!-- Website Navigation Container -->
         <div class="container">
             <div class="navBar" style="margin-bottom: 10px">
-                <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
+                <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
 
                 <!-- account actions -->
                 <div class="topNav">
@@ -136,11 +131,11 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
                         </li>
                         <div class="dropdown">
                             <div class="dropunderline">
-                                <button id="dLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button id="dropDownLabel" class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Tracking
                                 </button>
 
-                                <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                <ul class="dropdown-menu" aria-labelledby="dropDownLabel">
                                     <li><a class="dropdown-item" href="computers.php">Computers</a></li>
                                     <li><a class="dropdown-item" href="medicalsupplies.php">Medical Supplies</a></li>
                                 </ul>
@@ -163,13 +158,15 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
     while ($row = $result->fetch_array()) {
         if (!$row[0]) {
             header("location: linkemployee.php");
+            $conn->close();
         }
     }
 
+    // check to see if user is elevated
     $sql = "SELECT elevated FROM users WHERE username = '" . $_SESSION['username'] . "'";
     $result = $conn->query($sql);
 
-    // if elevated is 0 $elevated_err gets assigned a value
+    // if elevated is 0 $elevated_err stores error message
     while ($row = $result->fetch_array()) {
         if (!$row[0]) {
             $elevated_err = "permission denied to add a user";
@@ -177,6 +174,7 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
     }
 
     ?>
+    <!-- Add Employee button container -->
     <div class="container">
         <div class="floatright">
             <!-- button trigger modal -->
@@ -187,16 +185,16 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
     </div>
 
     <!-- modal to add a new employee -->
-    <div class="modal fade" id="addEmployee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addEmployee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addEmployeeModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New Employee</h5>
+                    <h5 class="modal-title" id="addEmployeeModal">New Employee</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container">
-
+                        <!-- displays a warning message to user if not elevated -->
                         <?php if (!empty($elevated_err)) { ?>
                             <div class="alert alert-danger d-flex align-items-center" role="alert">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
@@ -204,13 +202,14 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
                                 </svg>
                                 <div>
                                     <?php
+                                    // prints a backspace after alert icon
                                     echo str_repeat('&nbsp;', 1);
                                     echo 'Requires elevated permissions' ?>
                                 </div>
                             </div>
                         <?php
                         } ?>
-                        <!-- form action executes php code -->
+                        <!-- form action executes php code start of document -->
                         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                             <!-- form input -->
                             <div class="row">
@@ -231,7 +230,7 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
                             <!-- form input -->
                             <div class="form-group" style="margin-top: 10px;">
                                 <label class="form-label">Email</label>
-                                <input type="text" name="email" placeholder="---@nnhopes.org" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>">
+                                <input type="text" name="email" placeholder="---@---.org" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>">
                                 <span class="invalid-feedback"><?php echo $email_err; ?></span>
                             </div>
                             <!-- Hides submit button if user is not elevated -->
@@ -240,8 +239,6 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
                                     <input type="submit" class="btn btn-primary" value="Submit" name="insertEmp" <?php echo (!empty($elevated_err)) ? 'is-invalid' : ''; ?>>
                                 <?php } ?>
                             </div>
-
-
                         </form>
                     </div>
                 </div>
@@ -249,7 +246,7 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
         </div>
     </div>
 
-
+    <!-- Search value filter container -->
     <div class="container">
         <!-- search value input box -->
         <div class="filterinput">
@@ -258,12 +255,7 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
 
         <?php
 
-
-
-        ?>
-        <?php
-
-        /* SQL statement for displaying all employees */
+        // SQL statement for displaying all employees 
         $sql = "SELECT firstName, lastName, email
                 FROM employees order by email";
 
@@ -300,12 +292,13 @@ if (isset($_POST['insertEmp']) && empty($elevated_err)) {
             echo "0 records";
         }
         echo "</table>";
+        $conn->close();
         ?>
 
     </div>
-    <!-- footer -->
+    <!-- footer container-->
     <div class="container">
-        <footer class="d-flex flex-wrap py-3 my-4">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4">
             <ul class="nav col-md-12 justify-content-end list-unstyled d-flex">
                 <span class="text-muted">created by - Bayley Sonder</span>
             </ul>

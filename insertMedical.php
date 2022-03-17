@@ -25,6 +25,6 @@ if(isset($_POST['submit'])){
 		echo "all fields required";
 	}
 	
-	//header( "refresh:0.1; url=tracking.php" ); //wait for .1 second before redirecting to Inventory page
+	header( "refresh:0.1; url=tracking.php" ); //wait for .1 second before redirecting to Inventory page
 }
 ?>

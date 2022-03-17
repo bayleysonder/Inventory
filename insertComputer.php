@@ -27,10 +27,8 @@ include 'config.php'; //database connection
 		} else {
 			echo "all fields required";
 		}
-
-		header("refresh:0.1; url=computers.php"); //wait for .1 second before redirecting to Inventory page
+		// redirect to computers.php
+		header("location: computers.php"); 
 	}
 
-
-//header("refresh:0.1; url=computers.php"); //wait for .1 second before redirecting to Inventory page
 ?>

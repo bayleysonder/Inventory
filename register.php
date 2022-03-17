@@ -100,12 +100,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <!-- bootstrap 5 css lib -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- personal style sheet -->
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body style="background-color: #fff;">
+    
+    <!-- register container -->
     <div class="wrapper">
-        <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
+        <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
         <h2 style="margin-top: 57px;">Sign Up</h2>
         <p class="clearfix">Please fill this form to create an account.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -128,6 +132,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
             </div>
+            <!-- redirects to login page -->
             <p>Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
     </div>    

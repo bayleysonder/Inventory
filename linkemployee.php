@@ -130,13 +130,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <title>Sign Up</title>
+    <!-- bootstrap 5 css lib -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- personal style sheet -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="logo"><img src="/imgs/nnh_logo.png" alt="Company Logo"></div>
+        <div class="logo"><img src="/imgs/logo.png" alt="Company Logo"></div>
         <h2 style="margin-top: 57px;">Link</h2>
         <p class="clearfix">Please fill this form to link your account.</p>
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
