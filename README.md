@@ -8,7 +8,7 @@ This is a full stack web application that helps an organization track their asse
 This helped the IT staff to keep track of the amount of IT assets we have in the organization and would also keep track of who had what checked out in the organization.
 The application uses frontend languages to allow an elevated user to make changes to a relational MySQL database. This would allow for future queries or any asset tracking that the department might need. Using these queries, I made a dashboard that had real time updates depending on the query generated, this was used to at a glance see how many laptops we had available and how many that were currently checked out.
 
---Application logic--
+Application logic:
 
 Employees can access inventory tracking system by creating an account on the website.
 
