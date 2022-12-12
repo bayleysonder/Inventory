@@ -3,7 +3,8 @@ Languages: html, css, javascript, php, and MySQL
 Frameworks: Bootstrap 5, chart.js
 
 
-This is a full stack web application that helps an organization track their assets. This was ran on a WAMP server using myphpadmin, MySQL, MariaDB
+This is a full stack web application that helps an organization track their assets. This was ran on a WAMP server using myphpadmin, MySQL, MariaDB.
+
 This helped the IT staff to keep track of the amount of IT assets we have in the organization and would also keep track of who had what checked out in the organization.
 The application uses frontend languages to allow the user to make changes to a relational MySQL database. This would allow for future queries or any asset tracking that the department might need. Using these queries, I made a dashboard that had real time updates depending on the query generated, this was used to at a glance see how many laptops we had available and how many that were currently checked out.
 
